@@ -1,5 +1,9 @@
 package com.kaamconnect.app;
 
+import com.kaamconnect.dao.UserDAO;
+import com.kaamconnect.enums.UserRole;
+import com.kaamconnect.enums.UserStatus;
+import com.kaamconnect.model.User;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
@@ -20,7 +24,30 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    public static void main(String[] args) {
-        launch(args);
+        public static void main(String[] args) {
+
+
+
+            UserDAO dao = new UserDAO();
+
+            User user = new User();
+
+            user.setFirstName("Fatima");
+            user.setLastName("Saleem");
+            user.setEmail("fatima@gmail.com");
+
+            user.setPassword("123456");
+
+            user.setPhone("03123456789");
+
+            user.setRole(UserRole.CUSTOMER);
+
+            user.setStatus(UserStatus.ACTIVE);
+
+            boolean result = dao.save(user);
+
+            System.out.println(result);
+
+        }
+
     }
-}
