@@ -18,6 +18,9 @@ public class User {
    private UserStatus status;
    private LocalDateTime createdAt;
 
+   public User() {
+   }
+
    public User(int userId, String firstName, String lastName, String email, String password, String phone, String profileImagePath, UserRole role, UserStatus status, LocalDateTime createdAt) {
       this.userId = userId;
       this.firstName = firstName;
