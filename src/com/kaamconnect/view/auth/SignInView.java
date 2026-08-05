@@ -1,19 +1,22 @@
 package com.kaamconnect.view.auth;
 
 import com.kaamconnect.component.AppCard;
+import com.kaamconnect.component.AppLogo;
 import com.kaamconnect.component.AppPasswordField;
 import com.kaamconnect.component.AppTextField;
 import com.kaamconnect.component.ErrorLabel;
 import com.kaamconnect.component.PrimaryButton;
-import com.kaamconnect.component.SecondaryButton;
 import com.kaamconnect.theme.AppColors;
 import com.kaamconnect.theme.AppDimensions;
 import com.kaamconnect.theme.AppFonts;
 import com.kaamconnect.theme.UIStyles;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public final class SignInView extends BorderPane {
@@ -22,19 +25,29 @@ public final class SignInView extends BorderPane {
     private final AppPasswordField passwordField;
 
     private final ErrorLabel errorLabel;
-
     private final PrimaryButton signInButton;
-    private final SecondaryButton registerButton;
+    private final Hyperlink registerLink;
 
     public SignInView() {
 
-        emailField = new AppTextField("Enter your email");
-        passwordField = new AppPasswordField("Enter your password");
+        emailField =
+                new AppTextField(
+                        "Enter your email address"
+                );
 
-        errorLabel = new ErrorLabel();
+        passwordField =
+                new AppPasswordField(
+                        "Enter your password"
+                );
 
-        signInButton = new PrimaryButton("Sign In");
-        registerButton = new SecondaryButton("Create Account");
+        errorLabel =
+                new ErrorLabel();
+
+        signInButton =
+                new PrimaryButton("Login");
+
+        registerLink =
+                new Hyperlink("Register");
 
         configureView();
     }
@@ -47,45 +60,104 @@ public final class SignInView extends BorderPane {
         );
 
         setPadding(
-                new Insets(AppDimensions.SCREEN_PADDING)
+                new Insets(
+                        AppDimensions.SCREEN_PADDING
+                )
         );
 
         UIStyles.stylePageBackground(this);
+        UIStyles.styleLink(registerLink);
 
-        Label appNameLabel = new Label("KaamConnect");
-        appNameLabel.setFont(AppFonts.heading());
-        appNameLabel.setTextFill(AppColors.PRIMARY);
+        emailField.setMaxWidth(
+                Double.MAX_VALUE
+        );
 
-        Label titleLabel = new Label("Welcome Back");
-        titleLabel.setFont(AppFonts.pageTitle());
-        titleLabel.setTextFill(AppColors.TEXT_PRIMARY);
+        passwordField.setMaxWidth(
+                Double.MAX_VALUE
+        );
+
+        AppLogo appLogo =
+                new AppLogo(190);
+
+        Label titleLabel =
+                new Label("Login");
+
+        titleLabel.setFont(
+                AppFonts.pageTitle()
+        );
+
+        titleLabel.setTextFill(
+                AppColors.TEXT_PRIMARY
+        );
 
         Label descriptionLabel =
-                new Label("Sign in to continue to your account");
+                new Label(
+                        "Welcome back! Sign in to continue."
+                );
 
-        descriptionLabel.setFont(AppFonts.body());
-        descriptionLabel.setTextFill(AppColors.TEXT_SECONDARY);
+        descriptionLabel.setFont(
+                AppFonts.body()
+        );
+
+        descriptionLabel.setTextFill(
+                AppColors.TEXT_SECONDARY
+        );
 
         VBox headerBox = new VBox(
-                AppDimensions.SPACING_SMALL,
-                appNameLabel,
+                AppDimensions.SPACING_MEDIUM,
+                appLogo,
                 titleLabel,
                 descriptionLabel
         );
 
-        headerBox.setAlignment(Pos.CENTER);
+        headerBox.setAlignment(
+                Pos.CENTER
+        );
 
-        emailField.setMaxWidth(Double.MAX_VALUE);
-        passwordField.setMaxWidth(Double.MAX_VALUE);
+        VBox emailGroup =
+                createFieldGroup(
+                        "Email Address",
+                        emailField
+                );
 
-        AppCard signInCard = new AppCard();
+        VBox passwordGroup =
+                createFieldGroup(
+                        "Password",
+                        passwordField
+                );
+
+        Label accountLabel =
+                new Label(
+                        "Don’t have an account?"
+                );
+
+        accountLabel.setFont(
+                AppFonts.body()
+        );
+
+        accountLabel.setTextFill(
+                AppColors.TEXT_SECONDARY
+        );
+
+        HBox registerRow = new HBox(
+                AppDimensions.SPACING_SMALL,
+                accountLabel,
+                registerLink
+        );
+
+        registerRow.setAlignment(
+                Pos.CENTER
+        );
+
+        AppCard signInCard =
+                new AppCard();
 
         signInCard.getChildren().addAll(
-                emailField,
-                passwordField,
+                emailGroup,
+                passwordGroup,
                 errorLabel,
                 signInButton,
-                registerButton
+                registerRow
         );
 
         VBox mainContent = new VBox(
@@ -94,10 +166,44 @@ public final class SignInView extends BorderPane {
                 signInCard
         );
 
-        mainContent.setAlignment(Pos.CENTER);
-        mainContent.setMaxWidth(AppDimensions.FORM_WIDTH);
+        mainContent.setAlignment(
+                Pos.CENTER
+        );
+
+        mainContent.setMaxWidth(
+                AppDimensions.FORM_WIDTH
+        );
 
         setCenter(mainContent);
+    }
+
+    private VBox createFieldGroup(
+            String labelText,
+            Node field
+    ) {
+
+        Label label =
+                new Label(labelText);
+
+        label.setFont(
+                AppFonts.body()
+        );
+
+        label.setTextFill(
+                AppColors.TEXT_PRIMARY
+        );
+
+        VBox group = new VBox(
+                AppDimensions.SPACING_SMALL,
+                label,
+                field
+        );
+
+        group.setMaxWidth(
+                Double.MAX_VALUE
+        );
+
+        return group;
     }
 
     public AppTextField getEmailField() {
@@ -116,7 +222,7 @@ public final class SignInView extends BorderPane {
         return signInButton;
     }
 
-    public SecondaryButton getRegisterButton() {
-        return registerButton;
+    public Hyperlink getRegisterLink() {
+        return registerLink;
     }
 }

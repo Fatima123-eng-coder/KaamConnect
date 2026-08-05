@@ -12,10 +12,10 @@ public final class AppCard extends VBox {
         setSpacing(AppDimensions.SPACING_MEDIUM);
 
         setPadding(
-                new Insets(AppDimensions.PADDING_LARGE)
+                new Insets(AppDimensions.CARD_PADDING)
         );
 
-        setMaxWidth(AppDimensions.FORM_WIDTH);
+        setMaxWidth(Double.MAX_VALUE);
 
         UIStyles.styleCard(this);
     }

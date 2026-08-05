@@ -4,10 +4,20 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DBConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/KaamConnect";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "fatimasaleem";
+public final class DBConnection {
+
+    private static final String URL =
+            "jdbc:mysql://localhost:3306/KaamConnect"
+                    + "?useSSL=false"
+                    + "&allowPublicKeyRetrieval=true"
+                    + "&serverTimezone=UTC";
+
+    private static final String USERNAME =
+            "kaamconnect_user";
+
+    private static final String PASSWORD =
+            "KaamConnect@123";
+
     private static Connection connection;
 
     private DBConnection() {
@@ -17,36 +27,65 @@ public class DBConnection {
 
         try {
 
-            if (connection == null || connection.isClosed()) {
+            /*
+             * Explicitly load the MySQL JDBC driver.
+             */
+            Class.forName(
+                    "com.mysql.cj.jdbc.Driver"
+            );
 
-                connection = DriverManager.getConnection(
-                        URL,
-                        USERNAME,
-                        PASSWORD
+            if (connection == null ||
+                    connection.isClosed()) {
+
+                connection =
+                        DriverManager.getConnection(
+                                URL,
+                                USERNAME,
+                                PASSWORD
+                        );
+
+                System.out.println(
+                        "Database connected successfully."
                 );
             }
 
-        } catch (SQLException e) {
+            return connection;
 
-            System.out.println("Database Connection Failed!");
-            e.printStackTrace();
+        } catch (ClassNotFoundException exception) {
+
+            throw new IllegalStateException(
+                    "MySQL Connector/J is not added to the project.",
+                    exception
+            );
+
+        } catch (SQLException exception) {
+
+            throw new IllegalStateException(
+                    "Database connection failed. "
+                            + "Check the database, username and password.",
+                    exception
+            );
         }
-
-        return connection;
     }
 
     public static void closeConnection() {
 
         try {
 
-            if (connection != null && !connection.isClosed()) {
+            if (connection != null &&
+                    !connection.isClosed()) {
 
                 connection.close();
+                connection = null;
+
+                System.out.println(
+                        "Database connection closed."
+                );
             }
 
-        } catch (SQLException e) {
+        } catch (SQLException exception) {
 
-            e.printStackTrace();
+            exception.printStackTrace();
         }
     }
 }

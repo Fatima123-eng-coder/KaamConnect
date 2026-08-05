@@ -1,192 +1,191 @@
 package com.kaamconnect.theme;
 
-import javafx.geometry.Insets;
 import javafx.scene.Cursor;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBase;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextInputControl;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
 
 public final class UIStyles {
 
-    // Applies the main indigo style to primary buttons
-    public static void stylePrimaryButton(ButtonBase button) {
-
-        button.setFont(AppFonts.button());
-        button.setTextFill(AppColors.TEXT_ON_PRIMARY);
-
-        button.setPrefHeight(AppDimensions.BUTTON_HEIGHT);
-        button.setMaxWidth(Double.MAX_VALUE);
-
-        button.setCursor(Cursor.HAND);
-
-        button.setBackground(
-                new Background(
-                        new BackgroundFill(
-                                AppColors.PRIMARY,
-                                new CornerRadii(
-                                        AppDimensions.RADIUS_MEDIUM
-                                ),
-                                Insets.EMPTY
-                        )
-                )
-        );
+    private UIStyles() {
     }
 
-
-    // Applies the white background and indigo border to secondary buttons
-    public static void styleSecondaryButton(ButtonBase button) {
-
-        button.setFont(AppFonts.button());
-        button.setTextFill(AppColors.PRIMARY);
-
-        button.setPrefHeight(AppDimensions.BUTTON_HEIGHT);
-        button.setMaxWidth(Double.MAX_VALUE);
-
-        button.setCursor(Cursor.HAND);
-
-        button.setBackground(
-                new Background(
-                        new BackgroundFill(
-                                AppColors.SURFACE,
-                                new CornerRadii(
-                                        AppDimensions.RADIUS_MEDIUM
-                                ),
-                                Insets.EMPTY
-                        )
-                )
-        );
-
-        button.setBorder(
-                createBorder(
-                        AppColors.PRIMARY,
-                        AppDimensions.RADIUS_MEDIUM
-                )
-        );
-    }
-
-
-    // Applies the standard design to text fields and password fields
-    public static void styleInput(TextInputControl input) {
-
-        input.setFont(AppFonts.body());
-        input.setPrefHeight(AppDimensions.INPUT_HEIGHT);
-
-        input.setBackground(
-                new Background(
-                        new BackgroundFill(
-                                AppColors.SURFACE,
-                                new CornerRadii(
-                                        AppDimensions.RADIUS_SMALL
-                                ),
-                                Insets.EMPTY
-                        )
-                )
-        );
-
-        input.setBorder(
-                createBorder(
-                        AppColors.BORDER,
-                        AppDimensions.RADIUS_SMALL
-                )
-        );
-
-        // Changes the border colour when the input is selected
-        input.focusedProperty().addListener(
-                (observable, oldValue, isFocused) -> {
-
-                    Color borderColor;
-
-                    if (isFocused) {
-                        borderColor = AppColors.FOCUS_BORDER;
-                    } else {
-                        borderColor = AppColors.BORDER;
-                    }
-
-                    input.setBorder(
-                            createBorder(
-                                    borderColor,
-                                    AppDimensions.RADIUS_SMALL
-                            )
-                    );
-                }
-        );
-    }
-
-
-    // Applies a white card design with rounded corners
-    public static void styleCard(Region card) {
-
-        card.setBackground(
-                new Background(
-                        new BackgroundFill(
-                                AppColors.SURFACE,
-                                new CornerRadii(
-                                        AppDimensions.RADIUS_LARGE
-                                ),
-                                Insets.EMPTY
-                        )
-                )
-        );
-
-        card.setBorder(
-                createBorder(
-                        AppColors.BORDER,
-                        AppDimensions.RADIUS_LARGE
-                )
-        );
-    }
-
-
-    // Applies the main application background
-    public static void stylePageBackground(Region page) {
-
-        page.setBackground(
-                new Background(
-                        new BackgroundFill(
-                                AppColors.BACKGROUND,
-                                CornerRadii.EMPTY,
-                                Insets.EMPTY
-                        )
-                )
-        );
-    }
-
-
-    // Applies error styling to validation messages
-    public static void styleErrorLabel(Label label) {
-
-        label.setFont(AppFonts.small());
-        label.setTextFill(AppColors.ERROR);
-    }
-
-
-    // Creates a reusable border
-    private static Border createBorder(
-            Color color,
-            double radius
+    public static void stylePageBackground(
+            Region region
     ) {
 
-        return new Border(
-                new BorderStroke(
-                        color,
-                        BorderStrokeStyle.SOLID,
-                        new CornerRadii(radius),
-                        new BorderWidths(1)
-                )
+        region.setStyle(
+                "-fx-background-color: "
+                        + AppColors.BACKGROUND_HEX
+                        + ";"
         );
     }
 
+    public static void styleCard(
+            Region region
+    ) {
 
-    // Prevents creation of UIStyles objects
-    private UIStyles() {
+        region.setStyle(
+                "-fx-background-color: "
+                        + AppColors.SURFACE_HEX + ";" +
+                        "-fx-background-radius: "
+                        + AppDimensions.BORDER_RADIUS + ";" +
+                        "-fx-border-color: "
+                        + AppColors.BORDER_HEX + ";" +
+                        "-fx-border-radius: "
+                        + AppDimensions.BORDER_RADIUS + ";" +
+                        "-fx-border-width: 1;"
+        );
+    }
+
+    public static void styleInput(
+            Control control
+    ) {
+
+        control.setPrefHeight(
+                AppDimensions.INPUT_HEIGHT
+        );
+
+        control.setStyle(
+                "-fx-background-color: "
+                        + AppColors.SURFACE_HEX + ";" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-border-color: "
+                        + AppColors.BORDER_HEX + ";" +
+                        "-fx-border-radius: 10;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-padding: 0 14 0 14;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-text-fill: "
+                        + AppColors.PRIMARY_HEX + ";" +
+                        "-fx-prompt-text-fill: "
+                        + AppColors.TEXT_SECONDARY_HEX + ";"
+        );
+    }
+
+    public static void stylePasswordContainer(
+            Region region
+    ) {
+
+        region.setPrefHeight(
+                AppDimensions.INPUT_HEIGHT
+        );
+
+        region.setStyle(
+                "-fx-background-color: "
+                        + AppColors.SURFACE_HEX + ";" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-border-color: "
+                        + AppColors.BORDER_HEX + ";" +
+                        "-fx-border-radius: 10;" +
+                        "-fx-border-width: 1;"
+        );
+    }
+
+    public static void stylePrimaryButton(
+            ButtonBase button
+    ) {
+
+        button.setPrefHeight(
+                AppDimensions.BUTTON_HEIGHT
+        );
+
+        button.setMaxWidth(Double.MAX_VALUE);
+        button.setCursor(Cursor.HAND);
+
+        button.setStyle(
+                "-fx-background-color: "
+                        + AppColors.PRIMARY_HEX + ";" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 15px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-padding: 10 18 10 18;"
+        );
+    }
+
+    public static void styleSecondaryButton(
+            ButtonBase button
+    ) {
+
+        button.setPrefHeight(
+                AppDimensions.BUTTON_HEIGHT
+        );
+
+        button.setMaxWidth(Double.MAX_VALUE);
+        button.setCursor(Cursor.HAND);
+
+        button.setStyle(
+                "-fx-background-color: transparent;" +
+                        "-fx-border-color: "
+                        + AppColors.PRIMARY_HEX + ";" +
+                        "-fx-border-radius: 10;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-text-fill: "
+                        + AppColors.PRIMARY_HEX + ";" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-padding: 10 18 10 18;"
+        );
+    }
+
+    public static void styleLink(
+            Hyperlink hyperlink
+    ) {
+
+        hyperlink.setCursor(Cursor.HAND);
+
+        hyperlink.setStyle(
+                "-fx-border-color: transparent;" +
+                        "-fx-padding: 0;" +
+                        "-fx-text-fill: "
+                        + AppColors.PRIMARY_HEX + ";" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-weight: bold;"
+        );
+    }
+
+    public static void styleBackButton(
+            Button button
+    ) {
+
+        button.setCursor(Cursor.HAND);
+        button.setFocusTraversable(false);
+
+        button.setPrefSize(38, 38);
+
+        button.setStyle(
+                "-fx-background-color: transparent;" +
+                        "-fx-border-color: transparent;" +
+                        "-fx-text-fill: "
+                        + AppColors.PRIMARY_HEX + ";" +
+                        "-fx-font-size: 26px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-padding: 0;"
+        );
+    }
+
+    public static void styleComboBox(
+            ComboBox<?> comboBox
+    ) {
+
+        comboBox.setPrefHeight(
+                AppDimensions.INPUT_HEIGHT
+        );
+
+        comboBox.setMaxWidth(Double.MAX_VALUE);
+
+        comboBox.setStyle(
+                "-fx-background-color: "
+                        + AppColors.SURFACE_HEX + ";" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-border-color: "
+                        + AppColors.BORDER_HEX + ";" +
+                        "-fx-border-radius: 10;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-font-size: 14px;"
+        );
     }
 }

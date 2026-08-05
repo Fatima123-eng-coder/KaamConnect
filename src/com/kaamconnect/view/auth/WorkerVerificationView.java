@@ -1,6 +1,8 @@
 package com.kaamconnect.view.auth;
 
+import com.kaamconnect.component.AppBackButton;
 import com.kaamconnect.component.AppCard;
+import com.kaamconnect.component.AppLogo;
 import com.kaamconnect.component.AppTextField;
 import com.kaamconnect.component.ErrorLabel;
 import com.kaamconnect.component.PrimaryButton;
@@ -12,30 +14,27 @@ import com.kaamconnect.theme.AppFonts;
 import com.kaamconnect.theme.UIStyles;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.TextArea;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 
 import java.util.List;
 
 public final class WorkerVerificationView extends BorderPane {
 
+    private final AppBackButton backButton;
+
     private final AppTextField cnicNumberField;
     private final AppTextField cityField;
-    private final AppTextField addressField;
-    private final AppTextField serviceAreaField;
-
-    private final TextArea bioArea;
-
-    private final Spinner<Integer> experienceYearsSpinner;
 
     private final SecondaryButton chooseCnicFrontButton;
     private final SecondaryButton chooseCnicBackButton;
@@ -43,31 +42,20 @@ public final class WorkerVerificationView extends BorderPane {
     private final Label cnicFrontFileLabel;
     private final Label cnicBackFileLabel;
 
-    private final ListView<ServiceCategory> categoryListView;
+    private final ComboBox<ServiceCategory> categoryComboBox;
 
     private final ErrorLabel errorLabel;
-
     private final PrimaryButton submitButton;
-    private final SecondaryButton backButton;
 
     public WorkerVerificationView() {
 
+        backButton = new AppBackButton();
+
         cnicNumberField =
-                new AppTextField("Enter CNIC number");
+                new AppTextField("35202-1234567-1");
 
         cityField =
                 new AppTextField("Enter your city");
-
-        addressField =
-                new AppTextField("Enter your complete address");
-
-        serviceAreaField =
-                new AppTextField("Enter your service area");
-
-        bioArea = new TextArea();
-
-        experienceYearsSpinner =
-                new Spinner<>(0, 50, 0);
 
         chooseCnicFrontButton =
                 new SecondaryButton("Choose CNIC Front");
@@ -81,15 +69,14 @@ public final class WorkerVerificationView extends BorderPane {
         cnicBackFileLabel =
                 new Label("No file selected");
 
-        categoryListView = new ListView<>();
+        categoryComboBox =
+                new ComboBox<>();
 
-        errorLabel = new ErrorLabel();
+        errorLabel =
+                new ErrorLabel();
 
         submitButton =
-                new PrimaryButton("Submit Verification");
-
-        backButton =
-                new SecondaryButton("Back");
+                new PrimaryButton("Submit Application");
 
         configureView();
     }
@@ -103,14 +90,20 @@ public final class WorkerVerificationView extends BorderPane {
 
         UIStyles.stylePageBackground(this);
 
-        configureInputs();
-        configureExperienceSpinner();
-        configureCategoryList();
-        configureFileLabels();
+        configureCategoryComboBox();
+        configureFileLabel(cnicFrontFileLabel);
+        configureFileLabel(cnicBackFileLabel);
 
-        Label appNameLabel = new Label("KaamConnect");
-        appNameLabel.setFont(AppFonts.heading());
-        appNameLabel.setTextFill(AppColors.PRIMARY);
+        AppLogo logo =
+                new AppLogo(165);
+
+        StackPane topBar =
+                new StackPane(logo, backButton);
+
+        StackPane.setAlignment(
+                backButton,
+                Pos.CENTER_LEFT
+        );
 
         Label titleLabel =
                 new Label("Worker Verification");
@@ -118,168 +111,163 @@ public final class WorkerVerificationView extends BorderPane {
         titleLabel.setFont(AppFonts.pageTitle());
         titleLabel.setTextFill(AppColors.TEXT_PRIMARY);
 
-        Label descriptionLabel = new Label(
-                "Complete your professional information for approval"
-        );
+        Label descriptionLabel =
+                new Label("Submit your details for admin approval");
 
         descriptionLabel.setFont(AppFonts.body());
         descriptionLabel.setTextFill(AppColors.TEXT_SECONDARY);
-        descriptionLabel.setWrapText(true);
 
         VBox headerBox = new VBox(
-                AppDimensions.SPACING_SMALL,
-                appNameLabel,
+                AppDimensions.SPACING_MEDIUM,
+                topBar,
                 titleLabel,
                 descriptionLabel
         );
 
         headerBox.setAlignment(Pos.CENTER);
 
-        Label experienceLabel =
-                createSectionLabel("Years of Experience");
+        VBox cnicGroup =
+                createFieldGroup(
+                        "CNIC Number",
+                        cnicNumberField
+                );
 
-        Label documentsLabel =
-                createSectionLabel("CNIC Documents");
+        HBox frontRow =
+                createFileRow(
+                        chooseCnicFrontButton,
+                        cnicFrontFileLabel
+                );
 
-        Label categoriesLabel =
-                createSectionLabel("Select Service Categories");
+        HBox backRow =
+                createFileRow(
+                        chooseCnicBackButton,
+                        cnicBackFileLabel
+                );
 
-        HBox cnicFrontRow = createFileRow(
-                chooseCnicFrontButton,
-                cnicFrontFileLabel
-        );
+        VBox frontGroup =
+                createFieldGroup(
+                        "Upload CNIC Front",
+                        frontRow
+                );
 
-        HBox cnicBackRow = createFileRow(
-                chooseCnicBackButton,
-                cnicBackFileLabel
-        );
+        VBox backGroup =
+                createFieldGroup(
+                        "Upload CNIC Back",
+                        backRow
+                );
 
-        AppCard verificationCard = new AppCard();
+        VBox cityGroup =
+                createFieldGroup(
+                        "City",
+                        cityField
+                );
 
-        verificationCard.getChildren().addAll(
-                cnicNumberField,
-                cityField,
-                addressField,
-                serviceAreaField,
-                bioArea,
-                experienceLabel,
-                experienceYearsSpinner,
-                documentsLabel,
-                cnicFrontRow,
-                cnicBackRow,
-                categoriesLabel,
-                categoryListView,
+        VBox categoryGroup =
+                createFieldGroup(
+                        "Service Category",
+                        categoryComboBox
+                );
+
+        Label categoryHelp =
+                new Label("Select only one category");
+
+        categoryHelp.setFont(AppFonts.small());
+        categoryHelp.setTextFill(AppColors.TEXT_SECONDARY);
+
+        categoryGroup.getChildren().add(categoryHelp);
+
+        Label fileHelp =
+                new Label("Allowed: JPG, JPEG or PNG. Maximum size: 5 MB.");
+
+        fileHelp.setFont(AppFonts.small());
+        fileHelp.setTextFill(AppColors.TEXT_SECONDARY);
+        fileHelp.setWrapText(true);
+
+        AppCard card =
+                new AppCard();
+
+        card.getChildren().addAll(
+                cnicGroup,
+                frontGroup,
+                backGroup,
+                fileHelp,
+                cityGroup,
+                categoryGroup,
                 errorLabel,
-                submitButton,
-                backButton
+                submitButton
         );
 
-        VBox pageContent = new VBox(
+        VBox content = new VBox(
                 AppDimensions.SPACING_LARGE,
                 headerBox,
-                verificationCard
+                card
         );
 
-        pageContent.setAlignment(Pos.TOP_CENTER);
+        content.setAlignment(Pos.TOP_CENTER);
+        content.setMaxWidth(AppDimensions.FORM_WIDTH);
 
-        pageContent.setPadding(
+        content.setPadding(
                 new Insets(AppDimensions.SCREEN_PADDING)
         );
 
-        ScrollPane scrollPane = new ScrollPane(pageContent);
+        ScrollPane scrollPane =
+                new ScrollPane(content);
 
         scrollPane.setFitToWidth(true);
-        scrollPane.setPannable(true);
-        scrollPane.setBorder(null);
+
+        scrollPane.setHbarPolicy(
+                ScrollPane.ScrollBarPolicy.NEVER
+        );
+
+        scrollPane.setBackground(Background.EMPTY);
+        scrollPane.setBorder(Border.EMPTY);
+
+        scrollPane.setStyle(
+                "-fx-background-color: transparent;" +
+                        "-fx-background: transparent;"
+        );
 
         setCenter(scrollPane);
     }
 
-    private void configureInputs() {
+    private void configureCategoryComboBox() {
 
-        cnicNumberField.setMaxWidth(Double.MAX_VALUE);
-        cityField.setMaxWidth(Double.MAX_VALUE);
-        addressField.setMaxWidth(Double.MAX_VALUE);
-        serviceAreaField.setMaxWidth(Double.MAX_VALUE);
-
-        bioArea.setPromptText(
-                "Write a short description about your work"
+        categoryComboBox.setPromptText(
+                "Select service category"
         );
 
-        bioArea.setWrapText(true);
-        bioArea.setPrefRowCount(4);
-        bioArea.setPrefHeight(100);
-        bioArea.setMaxWidth(Double.MAX_VALUE);
+        UIStyles.styleComboBox(categoryComboBox);
 
-        UIStyles.styleInput(bioArea);
-
-        // Override the normal input height because bio is multiline
-        bioArea.setPrefHeight(100);
-    }
-
-    private void configureExperienceSpinner() {
-
-        experienceYearsSpinner.setEditable(true);
-        experienceYearsSpinner.setPrefHeight(
-                AppDimensions.INPUT_HEIGHT
-        );
-
-        experienceYearsSpinner.setMaxWidth(Double.MAX_VALUE);
-    }
-
-    private void configureCategoryList() {
-
-        categoryListView.getSelectionModel()
-                .setSelectionMode(SelectionMode.MULTIPLE);
-
-        categoryListView.setPrefHeight(140);
-        categoryListView.setMaxWidth(Double.MAX_VALUE);
-
-        categoryListView.setCellFactory(listView ->
-                new ListCell<>() {
+        categoryComboBox.setConverter(
+                new StringConverter<>() {
 
                     @Override
-                    protected void updateItem(
-                            ServiceCategory category,
-                            boolean empty
+                    public String toString(
+                            ServiceCategory category
                     ) {
 
-                        super.updateItem(category, empty);
-
-                        if (empty || category == null) {
-                            setText(null);
-                        } else {
-                            setText(category.getCategoryName());
+                        if (category == null) {
+                            return "";
                         }
+
+                        return category.getCategoryName();
+                    }
+
+                    @Override
+                    public ServiceCategory fromString(
+                            String value
+                    ) {
+                        return null;
                     }
                 }
         );
     }
 
-    private void configureFileLabels() {
+    private void configureFileLabel(Label label) {
 
-        cnicFrontFileLabel.setFont(AppFonts.small());
-        cnicFrontFileLabel.setTextFill(
-                AppColors.TEXT_SECONDARY
-        );
-
-        cnicBackFileLabel.setFont(AppFonts.small());
-        cnicBackFileLabel.setTextFill(
-                AppColors.TEXT_SECONDARY
-        );
-
-        cnicFrontFileLabel.setWrapText(true);
-        cnicBackFileLabel.setWrapText(true);
-    }
-
-    private Label createSectionLabel(String text) {
-
-        Label label = new Label(text);
-
-        label.setFont(AppFonts.body());
-        label.setTextFill(AppColors.TEXT_PRIMARY);
-
-        return label;
+        label.setFont(AppFonts.small());
+        label.setTextFill(AppColors.TEXT_SECONDARY);
+        label.setWrapText(true);
     }
 
     private HBox createFileRow(
@@ -287,10 +275,10 @@ public final class WorkerVerificationView extends BorderPane {
             Label fileLabel
     ) {
 
-        button.setMaxWidth(180);
+        button.setMaxWidth(175);
 
         HBox row = new HBox(
-                AppDimensions.SPACING_MEDIUM,
+                AppDimensions.SPACING_SMALL,
                 button,
                 fileLabel
         );
@@ -305,29 +293,52 @@ public final class WorkerVerificationView extends BorderPane {
         return row;
     }
 
+    private VBox createFieldGroup(
+            String labelText,
+            Node field
+    ) {
+
+        Label label =
+                new Label(labelText);
+
+        label.setFont(AppFonts.body());
+        label.setTextFill(AppColors.TEXT_PRIMARY);
+
+        VBox group = new VBox(
+                AppDimensions.SPACING_SMALL,
+                label,
+                field
+        );
+
+        group.setMaxWidth(Double.MAX_VALUE);
+
+        return group;
+    }
+
     public void setCategories(
             List<ServiceCategory> categories
     ) {
-
-        categoryListView.getItems().setAll(categories);
+        categoryComboBox.getItems().setAll(categories);
     }
 
-    public void setCnicFrontFileName(String fileName) {
-
-        if (fileName == null || fileName.isBlank()) {
-            cnicFrontFileLabel.setText("No file selected");
-        } else {
-            cnicFrontFileLabel.setText(fileName);
-        }
+    public void setCnicFrontFileName(String name) {
+        cnicFrontFileLabel.setText(
+                name == null || name.isBlank()
+                        ? "No file selected"
+                        : name
+        );
     }
 
-    public void setCnicBackFileName(String fileName) {
+    public void setCnicBackFileName(String name) {
+        cnicBackFileLabel.setText(
+                name == null || name.isBlank()
+                        ? "No file selected"
+                        : name
+        );
+    }
 
-        if (fileName == null || fileName.isBlank()) {
-            cnicBackFileLabel.setText("No file selected");
-        } else {
-            cnicBackFileLabel.setText(fileName);
-        }
+    public AppBackButton getBackButton() {
+        return backButton;
     }
 
     public AppTextField getCnicNumberField() {
@@ -338,22 +349,6 @@ public final class WorkerVerificationView extends BorderPane {
         return cityField;
     }
 
-    public AppTextField getAddressField() {
-        return addressField;
-    }
-
-    public AppTextField getServiceAreaField() {
-        return serviceAreaField;
-    }
-
-    public TextArea getBioArea() {
-        return bioArea;
-    }
-
-    public Spinner<Integer> getExperienceYearsSpinner() {
-        return experienceYearsSpinner;
-    }
-
     public SecondaryButton getChooseCnicFrontButton() {
         return chooseCnicFrontButton;
     }
@@ -362,16 +357,8 @@ public final class WorkerVerificationView extends BorderPane {
         return chooseCnicBackButton;
     }
 
-    public Label getCnicFrontFileLabel() {
-        return cnicFrontFileLabel;
-    }
-
-    public Label getCnicBackFileLabel() {
-        return cnicBackFileLabel;
-    }
-
-    public ListView<ServiceCategory> getCategoryListView() {
-        return categoryListView;
+    public ComboBox<ServiceCategory> getCategoryComboBox() {
+        return categoryComboBox;
     }
 
     public ErrorLabel getErrorLabel() {
@@ -380,9 +367,5 @@ public final class WorkerVerificationView extends BorderPane {
 
     public PrimaryButton getSubmitButton() {
         return submitButton;
-    }
-
-    public SecondaryButton getBackButton() {
-        return backButton;
     }
 }
