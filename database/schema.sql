@@ -1,5 +1,5 @@
-CREATE DATABASE practice;
-USE practice;
+Create DATABASE KaamConnect;
+Use KaamConnect;
 CREATE TABLE Users(
 
                       user_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -50,18 +50,28 @@ CREATE TABLE Worker_Profile(
 
                                address VARCHAR(255),
 
+                               category_id INT NOT NULL,
+
                                approval_status ENUM(
         'PENDING',
         'APPROVED',
         'REJECTED'
     ) DEFAULT 'PENDING',
 
+                               rejection_reason TEXT,
+
                                profile_completed BOOLEAN DEFAULT FALSE,
 
                                CONSTRAINT fk_worker_user
-                                   FOREIGN KEY(user_id)
+                                   FOREIGN KEY (user_id)
                                        REFERENCES Users(user_id)
                                        ON DELETE CASCADE
+                                       ON UPDATE CASCADE,
+
+                               CONSTRAINT fk_worker_category
+                                   FOREIGN KEY (category_id)
+                                       REFERENCES Service_Category(category_id)
+                                       ON DELETE RESTRICT
                                        ON UPDATE CASCADE
 
 );
@@ -74,26 +84,5 @@ CREATE TABLE Service_Category(
                                  description VARCHAR(255),
 
                                  icon_path VARCHAR(255)
-
-);
-CREATE TABLE Worker_Category(
-
-                                user_id INT,
-
-                                category_id INT,
-
-                                PRIMARY KEY(user_id, category_id),
-
-                                CONSTRAINT fk_wc_worker
-                                    FOREIGN KEY(user_id)
-                                        REFERENCES Worker_Profile(user_id)
-                                        ON DELETE CASCADE
-                                        ON UPDATE CASCADE,
-
-                                CONSTRAINT fk_wc_category
-                                    FOREIGN KEY(category_id)
-                                        REFERENCES Service_Category(category_id)
-                                        ON DELETE CASCADE
-                                        ON UPDATE CASCADE
 
 );

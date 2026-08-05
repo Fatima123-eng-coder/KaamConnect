@@ -13,6 +13,10 @@ public class ServiceCategory {
         this.description = description;
     }
 
+    public ServiceCategory() {
+
+    }
+
     public int getCategoryId() {
         return categoryId;
     }
