@@ -1,4 +1,12 @@
 package com.kaamconnect.component;
 
-public class AppPasswordfeild {
+import com.kaamconnect.theme.UIStyles;
+import javafx.scene.control.PasswordField;
+
+public final class AppPasswordField extends PasswordField {
+
+    public AppPasswordField(String promptText) {
+        setPromptText(promptText);
+        UIStyles.styleInput(this);
+    }
 }
